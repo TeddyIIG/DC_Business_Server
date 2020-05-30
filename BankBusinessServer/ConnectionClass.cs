@@ -17,7 +17,7 @@ namespace BankBusinessServer
             UserInterface Iuser;
             Console.WriteLine("Attempting Connection to Server.... ");
             NetTcpBinding tcpBinding = new NetTcpBinding();
-            string connection = "net.tcp://localhost:8005/BankServer";
+            string connection = "net.tcp://localhost:8004/BankServer";
 
             UserFactory = new ChannelFactory<UserInterface>(tcpBinding, connection);
 

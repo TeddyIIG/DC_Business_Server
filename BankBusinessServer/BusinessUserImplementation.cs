@@ -6,14 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using ServerUserInterface;
 using System.Threading;
+using BankBusinessInterface;
+
 
 
 namespace BankBusinessServer
 {
-    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, InstanceContextMode = InstanceContextMode.Single)]
-    class BusinessUserImplementation 
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false, InstanceContextMode = InstanceContextMode.PerCall)]
+    class BusinessUserImplementation : IBankBusinessInterface
     {
-
+        ConnectionClass con_object = new ConnectionClass();
+        UserInterface data_server;
         private uint UserID;
         private uint AccID;
         private uint TransactionID;
@@ -23,72 +26,50 @@ namespace BankBusinessServer
 
         public BusinessUserImplementation()
         {
-            bankfuncobj = new BankFunctionality();
-            userobj = bankfuncobj.IUserAccess();
-
+            data_server = con_object.ConnectedInterface();
+                       
         }
 
 
         public uint CreateUser(string fname, string lname)  //This function creates a user by accessing the returned user interface
         {
-            //  try
-            //    {
-            // lock (threadlock)
-            //   {
-            UserID = userobj.CreateUser();   //this creates a user and assigns a userid
-            userobj.SetUserName(fname, lname);  //This will set the first name and last name entered by the user from the client side
-            Console.WriteLine(UserID); //for debugging purposes
-            bankfuncobj.Savetodisk(); //Writing the created user to the users.json file at C:/WebStuff/
+            
+            UserID = data_server.CreateUser();   //this creates a user and assigns a userid
+            Console.WriteLine("Created New User with ID : " + UserID); //for debugging purposes
+            data_server.SaveToDisk(); //Writing the created user to the users.json file at C:/WebStuff/
             return UserID; //returning the userid to the client
-                           //   }
-                           //      }
-                           /**       catch (FormatException ex)
-                                  {
-
-                                      return 0;
-                                  }
-                                  catch (ArgumentNullException ex2)
-                                  {
-
-                                      return 1;
-                                  } **/
-
+                          
         }
 
-        public void SelectUser(uint cusid)
+        public bool SearchandSelect(uint cusid)
         {
-            lock (threadlock)
+
+           if(data_server.GetUsers().Contains(cusid))
             {
-                userobj.SelectUser(cusid);
+
+                data_server.SelectUser(cusid);
                 UserID = cusid;
-                Thread.Sleep(1500);
+                return true;
 
             }
+           else
+            {
+                UserID = 0;
+                return false;
+            }
+                
+               
+
 
         }
 
-        public uint EditUser(string fname, string lname) //This function allows the client side to edit the user first name and last name 
+        public void EditUser(string fname, string lname) //This function allows the client side to edit the user first name and last name 
         {
-            //  try
-            //   {
-            //         lock (threadlock)
-            //       {
-            userobj.SelectUser(UserID); //Selects the user 
-            userobj.SetUserName(fname, lname); //Calls the function from BankDB.dll to set the user first names and last name, please note that the user must be selected for this to happen
-            bankfuncobj.Savetodisk(); //Saves the changed data to the users.json file at C:/WebStuff/
-            return 3;
-            //        }
-            //   }
-            //   catch (FormatException ex)
-            //   {
-
-            //         return 0;
-            //     }
-            //    catch (ArgumentNullException ex2)
-            //{
-            //
-            //    return 1;
-            //   }
+           
+            data_server.SelectUser(UserID); //Selects the user 
+            data_server.SetUserName(fname, lname); //Calls the function from BankDB.dll to set the user first names and last name, please note that the user must be selected for this to happen
+            data_server.SaveToDisk(); //Saves the changed data to the users.json file at C:/WebStuff/
+           
         }
         /**
                 public List<uint> userList() //Basically returns a list of userids for already created users
@@ -108,8 +89,8 @@ namespace BankBusinessServer
         public void getuser(out string fname, out string lname) //This will return the user first name and last name after a user has been selected 
         {
 
-            userobj.SelectUser(UserID);
-            userobj.GetUserName(out fname, out lname);
+            data_server.SelectUser(UserID);
+            data_server.GetUserName(out fname, out lname);
 
 
         }

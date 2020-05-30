@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ServiceModel;
+using BankBusinessInterface;
 
 namespace BankBusinessServer
 {
@@ -16,7 +17,7 @@ namespace BankBusinessServer
 
 
             serviceobj = new ServiceHost(typeof(BusinessUserImplementation));
-            serviceobj.AddServiceEndpoint(typeof(BusinessUserInterface), tcpbinding, "net.tcp://localhost:8005/BankBusinessServer");
+            serviceobj.AddServiceEndpoint(typeof(IBankBusinessInterface), tcpbinding, "net.tcp://localhost:8005/BankBusinessServer");
             serviceobj.Open();
 
             Console.WriteLine("Business Server is now online to handle clients");

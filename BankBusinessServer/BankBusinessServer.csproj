@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BankBusinessInterface">
+      <HintPath>..\..\..\BankBusinessInterface\BankBusinessInterface\bin\Debug\BankBusinessInterface.dll</HintPath>
+    </Reference>
     <Reference Include="ServerUserInterface">
       <HintPath>..\..\..\BankUserInterfaceDll\ServerUserInterface\ServerUserInterface\bin\Debug\ServerUserInterface.dll</HintPath>
     </Reference>
@@ -48,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BusinessUserImplementation.cs" />
-    <Compile Include="BusinessUserInterface.cs" />
     <Compile Include="ConnectionClass.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
