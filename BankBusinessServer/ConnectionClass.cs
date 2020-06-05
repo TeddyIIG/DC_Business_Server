@@ -15,22 +15,17 @@ namespace BankBusinessServer
         {
             try
             {
-
-                ChannelFactory<UserInterface> UserFactory;
-                UserInterface Iuser;
+                ChannelFactory<UserInterface> UserFactory; 
+                UserInterface Iuser; //Referencing user interface from bankserver dll
                 Console.WriteLine("Attempting Connection to Server.... ");
-                NetTcpBinding tcpBinding = new NetTcpBinding();
-                string connection = "net.tcp://127.0.0.1:5001/BankServer";
+                NetTcpBinding tcpBinding = new NetTcpBinding(); //creates a new tcpbinding object and initializes it
+                string connection = "net.tcp://127.0.0.1:5001/BankServer"; //The tcp endpoint which the channel factory will be configured to
 
-                UserFactory = new ChannelFactory<UserInterface>(tcpBinding, connection);
+                UserFactory = new ChannelFactory<UserInterface>(tcpBinding, connection); //Initializes the channel factory, configured to the defined tcp endpoint
 
-                Iuser = UserFactory.CreateChannel();
-
-
-
+                Iuser = UserFactory.CreateChannel(); //Create a communication channel
 
                 return Iuser;
-
             }
             catch (EndpointNotFoundException ex)
             {

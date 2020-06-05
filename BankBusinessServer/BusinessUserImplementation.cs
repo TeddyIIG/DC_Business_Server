@@ -48,42 +48,39 @@ namespace BankBusinessServer
                 data_server.SaveToDisk(); //Writing the created user to the users.json file at C:/WebStuff/
                 return UserID; //returning the userid to the client
             }
-            catch (FaultException ex)
+            catch (FaultException ex) //Catches FaultException that is being thrown from the server side
             {
-                Console.WriteLine(ex.Message);
-                throw new FaultException(ex.Message);
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
             
             }
                           
         }
 
         [MethodImpl (MethodImplOptions.Synchronized)] //Thread locking
-        public bool SearchandSelect(uint cusid)
+        public bool SearchandSelect(uint cusid) //This method searches the list of users and returns a boolean according to the existence of the relevant user
         {
             try
             {
 
-                if (data_server.GetUsers().Contains(cusid))
+                if (data_server.GetUsers().Contains(cusid)) //Checks if the list of users contain a user with the relevant customer id
                 {
 
-                    data_server.SelectUser(cusid);
-                    return true;
+                    data_server.SelectUser(cusid); //The user with the relevant customer id is selected for this call
+                    return true; //If the user is found
 
                 }
                 else
                 {
 
-                    return false;
+                    return false; //If the user is not found
                 }
             }
-            catch(FaultException ex)
+            catch(FaultException ex) //Catches FaultException that is being thrown from the server side
             {
-                Console.WriteLine(ex.Message);
-                throw new FaultException(ex.Message);
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
             }
-               
-
-
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -95,10 +92,10 @@ namespace BankBusinessServer
                 data_server.SetUserName(fname, lname); //Calls the function from BankDB.dll to set the user first names and last name, please note that the user must be selected for this to happen
                 data_server.SaveToDisk(); //Saves the changed data to the users.json file at C:/WebStuff/
             }
-            catch(FaultException ex)
+            catch(FaultException ex) //Catches FaultException that is being thrown from the server side
             {
-                Console.WriteLine(ex.Message);
-                throw new FaultException(ex.Message);
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
             }
            
         }
@@ -113,10 +110,10 @@ namespace BankBusinessServer
                 data_server.SelectUser(UserID);
                 data_server.GetUserName(out fname, out lname);
             }
-            catch (FaultException ex)
+            catch (FaultException ex) //Catches FaultException that is being thrown from the server side
             {
-                Console.WriteLine(ex.Message);
-                throw new FaultException(ex.Message);
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
             }
 
 
@@ -133,18 +130,19 @@ namespace BankBusinessServer
         {
             try
             {
-                uint AccID = data_server.CreateAccount(UserID);
-                data_server.SaveToDisk();
-                return AccID;
+                uint AccID = data_server.CreateAccount(UserID); //Creates the user account in the bank server and retrieves the account ID
+                data_server.SaveToDisk(); //Saves the changed data to the users.json file at C:/WebStuff/
+                return AccID; //return the account ID of the created user account
             }
-            catch(Exception ex)
+            catch(FaultException ex) //Catches FaultException that is being thrown from the server side
             {
-                Console.WriteLine(ex.Message);
-                throw new FaultException(ex.Message);
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
             }
                 
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public List<uint> ListAccountsbyId(uint UserID) //Basically returns a list of accounts associated with a particular user ID
         {
             try
@@ -152,10 +150,10 @@ namespace BankBusinessServer
                 List<uint> acclist = data_server.GetAccountIDsByUser(UserID); //assigns the returned list a list variable called acclist
                 return acclist; //returns the list when the function is called
             }
-            catch (FaultException ex)
+            catch (FaultException ex) //Catches FaultException that is being thrown from the server side
             {
-                Console.WriteLine(ex.Message);
-                throw new FaultException(ex.Message);
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
             }
         }
 
@@ -169,10 +167,10 @@ namespace BankBusinessServer
                 return balance; //returns the balance varia
                
             }
-            catch (FaultException ex)
+            catch (FaultException ex) //Catches FaultException that is being thrown from the server side
             {
-                Console.WriteLine(ex.Message);
-                throw new FaultException(ex.Message);
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
             }
         }
 
@@ -186,12 +184,12 @@ namespace BankBusinessServer
                 data_server.Deposit(dep_amount);    //calls the deposit function from the bank server
                 
             }
-            catch (FaultException ex)
+            catch (FaultException ex) //Catches FaultException that is being thrown from the server side
             {
-                Console.WriteLine(ex.Message);
-                throw new FaultException(ex.Message);
-                                
-               
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
+
+
             }
             
 
@@ -202,25 +200,22 @@ namespace BankBusinessServer
         {
             try
             {
-                data_server.SelectAccount(accid);
-                if (data_server.GetBalance() > withdraw_amount)
+                data_server.SelectAccount(accid); //Selects the user account with the relevant account ID
+                if (data_server.GetBalance() >= withdraw_amount) //Checks if the selected account has enough balance to withdraw the specified amount
                 {
-
-                    data_server.Withdraw(withdraw_amount);
-                    return true;
-
-
+                    data_server.Withdraw(withdraw_amount); //Withdraws the amount in the bank server from the selected user account
+                    return true; //If successfully withdrawn
                 }
 
                 else
                 {
-                    return false;
+                    return false; //If withdrawal was not possible
                 }
             }
-            catch(FaultException ex)
+            catch(FaultException ex) //Catches FaultException that is being thrown from the server side
             {
-                Console.WriteLine(ex.Message);
-                throw new FaultException(ex.Message);
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
             }
             
 
@@ -231,83 +226,96 @@ namespace BankBusinessServer
         /** ----------------------------------------------------------- START OF TRANSACTION FUNCTION ------------------------- **/
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public List<uint> DisplayTransactions (uint accID)
-        {
-            data_server.SelectAccount(accID);
-            List<uint> Transactionlist  = data_server.GetTransactions();
-            return Transactionlist;
-
-        }
-
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public uint CreateTransaction(uint accID)
-        {
-            data_server.SelectAccount(accID);
-            uint transID = data_server.CreateTransaction();
-            return transID;
-        }
-
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public bool setTransaction(uint sendID, uint receivID, uint amount,uint transID)
+        public List<uint> DisplayTransactions (uint accID) //This method returns the list of transactions belonging to the account of the relevant account ID
         {
             try
             {
-                data_server.SelectTransaction(transID);
+                data_server.SelectAccount(accID); //Selects the user account with the relevant account ID
+                List<uint> Transactionlist = data_server.GetTransactions(); //Retrieves the list of transcations from the bank server for the selected user account
+                return Transactionlist; //returns the transaction list
+            }
+            catch (FaultException ex) //Catches FaultException that is being thrown from the server side
+            {
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
+            }
 
-                if (amount <= this.GetBalance(sendID))
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public uint CreateTransaction(uint accID) //Creates a new transaction and returns the transaction ID
+        {
+            try
+            {
+                data_server.SelectAccount(accID); //Selects the user account with the relevant account ID
+                uint transID = data_server.CreateTransaction(); //Creates
+                return transID;
+            }
+            catch (FaultException ex) //Catches FaultException that is being thrown from the server side
+            {
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        public bool setTransaction(uint sendID, uint receivID, uint amount,uint transID) //This method sets the details of the transaction and returns a boolean depending on the success
+        {
+            try
+            {
+                data_server.SelectTransaction(transID); //Selects the transaction in the bank server
+
+                if (amount <= this.GetBalance(sendID)) //Checks if the user account balance is suffeicient to perform the transaction
                 {
-                    data_server.SetRecvr(receivID);
-                    data_server.SetSendr(sendID);
-                    data_server.SetAmount(amount);
+                    data_server.SetRecvr(receivID); //Sets the reciever ID for the selected transaction
+                    data_server.SetSendr(sendID); //Sets the sender ID for the selected transaction
+                    data_server.SetAmount(amount); //Sets the amount for the selected transaction
                     return true;
                 }
                 else
                 {
-                    return false;
+                    return false; //if the amount is insufficient
                 }
             }
-            catch(FaultException ex)
+            catch(FaultException ex) //Catches FaultException that is being thrown from the server side
             {
-                Console.WriteLine(ex.Message);
-                throw new FaultException(ex.Message);
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
             }
 
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void ShowTransactionDetail(out uint sendID, out uint receivID, out uint amount, uint transID)
+        public void ShowTransactionDetail(out uint sendID, out uint receivID, out uint amount, uint transID) //This method outputs the account ID's of the sender and receiver and the amount of the relevant transaction
         {
             try
             {
-                data_server.SelectTransaction(transID);
-                amount = data_server.GetAmount();
-                receivID = data_server.GetRecvrAcct();
-                sendID = data_server.GetSendrAcct();
+                data_server.SelectTransaction(transID); //The relevant transaction is selected in the bank server
+                amount = data_server.GetAmount(); //acquires the amount of the relevant transaction
+                receivID = data_server.GetRecvrAcct(); //acquires the receiver's account ID
+                sendID = data_server.GetSendrAcct(); //acquires the sender's account ID
             }
-            catch(FaultException ex)
+            catch(FaultException ex) //Catches FaultException that is being thrown from the server side
             {
-                Console.WriteLine(ex.Message);
-                throw new FaultException(ex.Message);
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
             }
             
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void commitalltransactions()
+        public void commitalltransactions() //This method saves all the transactions to the user.json file at C:/WebStuff/
         {
             try
             {
-                data_server.ProcessAllTransactions();
-                data_server.SaveToDisk();
+                data_server.ProcessAllTransactions(); //Processes all the transactions in the bank server before saving
+                data_server.SaveToDisk(); //Saves the changed data to the users.json file at C:/WebStuff/
             }
-            catch(FaultException ex)
+            catch(FaultException ex) //Catches FaultException that is being thrown from the server side
             {
-                Console.WriteLine(ex.Message);
-                throw new FaultException(ex.Message);
+                Console.WriteLine(ex.Message); //Logs the exception in the console for debugging purposes
+                throw new FaultException(ex.Message); //rethrows the fault exception towards the client
             }
         }
-        
-
-        
     }
 }
